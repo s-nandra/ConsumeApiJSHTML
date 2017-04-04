@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+         
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+          
+
+          <script>
+            var tokenString='';
+            $.ajax({
+            type: "POST",
+            url: 'https://api.vantage.online/application/loginsingle ',
+            dataType: 'json',
+
+            headers: {
+                'Authorization': "Basic " + btoa("96eae456-b42d-4b5c-a4e5-d3bbc6ec28e0" + ":" + "tcAOWExUV0Y2B3KExDSK")
+            },
+            success: function (data, status){
+                //console.log(data);
+                //console.log("Data: " + data + "\nStatus: " + status + "\ntoken: " + data.Token);
+                tokenString =data.Token;
+                localStorage.setItem('token', tokenString);  
+
+                 
+            },
+            error: function (response) { console.log(response); }
+            });
+
+      
+               
+            $.ajax({
+                type: "GET", 
+                url: "https://api.vantage.online/customer",
+                dataType: 'json',
+                success: function(data, status) {
+                    console.log("The returned data", data);
+                    console.log(localStorage.getItem('token'))
+
+                    var customers = data.value;
+                    console.log("CUSTOMERS", customers);
+                
+
+                $.each(customers, function(i, c){
+                                $("ul").append(
+                                    "<li  class='list-group-item'>"+
+                                     "<a href='customerperson.html?cusid="+ c.Id +"'  id="+c.Id+">" + c.Name + "</a> : "+ c.Address1 + ", " + c.Address2 + "</li> ");
+                           
+                 });
+                      
+                },
+                error: function (response) { console.log(response); },
+                beforeSend: function(xhr, settings) { xhr.setRequestHeader('Authorization','Bearer ' + localStorage.getItem('token') ); } 
+                });
+                
+        </script>
+
+        <title>Developer Test Welcome!</title>
+    </head>
+
+    <body>
+        <h2>Customers</h2>
+        <div><ul  class='list-group'> </ul></div>
+         
+  
+ 
+
+
+    </body>
+
+    
+</html>
